@@ -122,7 +122,6 @@ const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({ beforeImage, afte
           src={afterImage} 
           alt="After" 
           className="h-full w-full object-cover pointer-events-none will-change-transform transform-gpu"
-          referrerPolicy="no-referrer"
           loading={priority ? "eager" : "lazy"}
         />
       </div>
@@ -140,7 +139,6 @@ const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({ beforeImage, afte
             src={beforeImage} 
             alt="Before" 
             className="h-full w-full object-cover pointer-events-none will-change-transform transform-gpu"
-            referrerPolicy="no-referrer"
             loading={priority ? "eager" : "lazy"}
           />
         </div>

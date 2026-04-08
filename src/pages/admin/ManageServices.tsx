@@ -755,11 +755,15 @@ const ManageServices = () => {
                             "relative flex h-32 sm:h-40 items-center justify-center overflow-hidden rounded-[2rem] border-2 border-dashed transition-all hover:border-luxury-gold group",
                             errors.image ? "border-red-500 bg-red-50/10" : "border-luxury-border bg-luxury-ink/[0.01]"
                           )}>
-                            <div className="text-center">
-                              <ImageIcon className="mx-auto h-8 w-8 text-luxury-gold opacity-30" />
-                              <p className="mt-3 text-[9px] font-bold uppercase tracking-widest text-luxury-gray">Click to upload images</p>
-                              <p className="mt-1 text-[7px] text-luxury-gray/60 uppercase tracking-widest">You can select multiple files</p>
-                            </div>
+                            {previewUrls[0] || formData.images[0] ? (
+                              <img src={previewUrls[0] || formData.images[0]} className="h-full w-full object-cover" />
+                            ) : (
+                              <div className="text-center">
+                                <ImageIcon className="mx-auto h-8 w-8 text-luxury-gold opacity-30" />
+                                <p className="mt-3 text-[9px] font-bold uppercase tracking-widest text-luxury-gray">Click to upload images</p>
+                                <p className="mt-1 text-[7px] text-luxury-gray/60 uppercase tracking-widest">You can select multiple files</p>
+                              </div>
+                            )}
                             <input type="file" multiple accept="image/*" onChange={handleFileChange} className="absolute inset-0 cursor-pointer opacity-0 z-10" />
                           </div>
                           {errors.image && <p className="text-[8px] text-red-500 font-bold uppercase tracking-widest">{errors.image}</p>}
@@ -771,7 +775,7 @@ const ManageServices = () => {
                               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                 {formData.images.map((img, i) => (
                                   <div key={`existing-${i}`} className="relative group/img-item h-24 overflow-hidden rounded-xl border border-luxury-border">
-                                    <img src={img} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                                    <img src={img} className="h-full w-full object-cover" />
                                     <button 
                                       type="button"
                                       onClick={() => removeImage(i)}

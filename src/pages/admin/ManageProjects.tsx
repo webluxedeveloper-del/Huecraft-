@@ -369,7 +369,7 @@ const ManageProjects = () => {
         {projects.map((project) => (
           <div key={project.id} className="group relative overflow-hidden rounded-3xl border border-luxury-border bg-white p-4 transition-all hover:border-luxury-gold hover:shadow-md">
             <div className="relative mb-4 h-48 overflow-hidden rounded-2xl">
-              <img src={project.image_url || project.after_image_url} alt={project.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" referrerPolicy="no-referrer" />
+              <img src={project.image_url || project.after_image_url} alt={project.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute top-3 right-3 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
                 <button 
                   onClick={() => {
@@ -568,7 +568,7 @@ const ManageProjects = () => {
                          errors.beforeImage ? "border-red-500 bg-red-50/10" : "border-luxury-border bg-luxury-ink/[0.02]"
                        )}>
                          {previews.before ? (
-                           <img src={previews.before} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                           <img src={previews.before} className="h-full w-full object-cover" />
                          ) : (
                            <div className="flex flex-col items-center gap-2">
                              <ImageIcon className="h-6 w-6 text-luxury-gold opacity-50" />
@@ -586,7 +586,7 @@ const ManageProjects = () => {
                          errors.afterImage ? "border-red-500 bg-red-50/10" : "border-luxury-border bg-luxury-ink/[0.02]"
                        )}>
                          {previews.after ? (
-                           <img src={previews.after} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                           <img src={previews.after} className="h-full w-full object-cover" />
                          ) : (
                            <div className="flex flex-col items-center gap-2">
                              <ImageIcon className="h-6 w-6 text-luxury-gold opacity-50" />
