@@ -38,6 +38,7 @@ import ManageServices from './pages/admin/ManageServices';
 import ManageTestimonials from './pages/admin/ManageTestimonials';
 import ViewLeads from './pages/admin/ViewLeads';
 import ViewQuotes from './pages/admin/ViewQuotes';
+import Login from './pages/admin/Login';
 
 // Components
 import Navbar from './components/Navbar';
@@ -179,6 +180,7 @@ const AppContent = () => {
             } />
 
             {/* Admin Routes - Wrapped in AdminLayout */}
+            <Route path="/admin/login" element={<Login />} />
             <Route path="/admin" element={<AdminLayout><motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}><Dashboard /></motion.div></AdminLayout>} />
             <Route path="/admin/projects" element={<AdminLayout><motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}><ManageProjects /></motion.div></AdminLayout>} />
             <Route path="/admin/services" element={<AdminLayout><motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}><ManageServices /></motion.div></AdminLayout>} />

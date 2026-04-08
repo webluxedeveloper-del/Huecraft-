@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '../../lib/supabase';
 import { 
   LayoutDashboard, 
   Briefcase, 
@@ -28,6 +29,32 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/admin/login');
+      } else {
+        setAuthenticated(true);
+      }
+      setLoading(false);
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate('/admin/login');
+      } else {
+        setAuthenticated(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const menuItems = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
@@ -37,11 +64,22 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     { name: 'Projects', path: '/admin/projects', icon: Briefcase },
   ];
 
-  const handleLogout = () => {
-    navigate('/');
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/admin/login');
   };
 
   const currentPage = menuItems.find(item => item.path === location.pathname)?.name || 'Admin';
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F8F9FA]">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-luxury-gold border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  if (!authenticated) return null;
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FA] text-luxury-ink font-sans selection:bg-luxury-gold/20 selection:text-luxury-gold">
