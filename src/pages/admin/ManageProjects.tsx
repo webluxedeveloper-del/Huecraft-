@@ -43,8 +43,6 @@ const ManageProjects = () => {
     description: '',
     tags: [] as string[],
     features: [] as string[],
-    before_image_url: '',
-    after_image_url: '',
     category: 'Residential',
   });
 
@@ -132,8 +130,8 @@ const ManageProjects = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.title) newErrors.title = 'Title is required';
     if (!formData.description) newErrors.description = 'Description is required';
-    if (!formData.before_image_url && !previews.before) newErrors.beforeImage = 'Before image is required';
-    if (!formData.after_image_url && !previews.after) newErrors.afterImage = 'After image is required';
+    if (!previews.before) newErrors.beforeImage = 'Before image is required';
+    if (!previews.after) newErrors.afterImage = 'After image is required';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -186,8 +184,8 @@ const ManageProjects = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      let beforeUrl = formData.before_image_url;
-      let afterUrl = formData.after_image_url;
+      let beforeUrl = editingProject?.before_image_url || '';
+      let afterUrl = editingProject?.after_image_url || '';
 
       // Upload files if selected
       if (selectedFiles.before) {
@@ -277,8 +275,6 @@ const ManageProjects = () => {
       description: '', 
       tags: [],
       features: [],
-      before_image_url: '', 
-      after_image_url: '',
       category: 'Residential',
     });
     setPreviews({ before: '', after: '' });
@@ -384,8 +380,7 @@ const ManageProjects = () => {
                       description: project.description, 
                       tags: project.tags || [],
                       features: project.features || [],
-                      before_image_url: project.before_image_url || '',
-                      after_image_url: project.after_image_url || project.image_url || '',
+                      category: project.category || 'Residential',
                     });
                     setPreviews({ 
                       before: project.before_image_url || '', 
@@ -562,65 +557,47 @@ const ManageProjects = () => {
                   </div>
                 </div>
 
-                {/* Section 5: Before & After Images */}
-                <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-ink border-b border-luxury-border pb-2">5. Before & After Images</h3>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-luxury-gray">Before Image URL</label>
-                      <input
-                        value={formData.before_image_url}
-                        onChange={(e) => {
-                          setFormData({ ...formData, before_image_url: e.target.value });
-                          setPreviews(prev => ({ ...prev, before: e.target.value }));
-                        }}
-                        className="w-full rounded-xl border border-luxury-border bg-luxury-ink/[0.02] px-4 py-3 text-sm text-luxury-ink outline-none transition-all focus:border-luxury-gold focus:bg-white"
-                        placeholder="https://images.unsplash.com/..."
-                      />
-                      <div className={cn(
-                        "relative flex h-32 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed transition-all hover:border-luxury-gold group",
-                        errors.beforeImage ? "border-red-500 bg-red-50/10" : "border-luxury-border bg-luxury-ink/[0.02]"
-                      )}>
-                        {previews.before ? (
-                          <img src={previews.before} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
-                        ) : (
-                          <div className="flex flex-col items-center gap-2">
-                            <ImageIcon className="h-6 w-6 text-luxury-gold opacity-50" />
-                            <span className="text-[8px] font-bold uppercase tracking-widest text-luxury-gray">Upload Before</span>
-                          </div>
-                        )}
-                        <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'before')} className="absolute inset-0 cursor-pointer opacity-0 z-10" />
-                      </div>
-                      {errors.beforeImage && <p className="text-[8px] text-red-500 font-bold uppercase tracking-widest">{errors.beforeImage}</p>}
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-luxury-gray">After Image URL</label>
-                      <input
-                        value={formData.after_image_url}
-                        onChange={(e) => {
-                          setFormData({ ...formData, after_image_url: e.target.value });
-                          setPreviews(prev => ({ ...prev, after: e.target.value }));
-                        }}
-                        className="w-full rounded-xl border border-luxury-border bg-luxury-ink/[0.02] px-4 py-3 text-sm text-luxury-ink outline-none transition-all focus:border-luxury-gold focus:bg-white"
-                        placeholder="https://images.unsplash.com/..."
-                      />
-                      <div className={cn(
-                        "relative flex h-32 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed transition-all hover:border-luxury-gold group",
-                        errors.afterImage ? "border-red-500 bg-red-50/10" : "border-luxury-border bg-luxury-ink/[0.02]"
-                      )}>
-                        {previews.after ? (
-                          <img src={previews.after} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
-                        ) : (
-                          <div className="flex flex-col items-center gap-2">
-                            <ImageIcon className="h-6 w-6 text-luxury-gold opacity-50" />
-                            <span className="text-[8px] font-bold uppercase tracking-widest text-luxury-gray">Upload After</span>
-                          </div>
-                        )}
-                        <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'after')} className="absolute inset-0 cursor-pointer opacity-0 z-10" />
-                      </div>
-                      {errors.afterImage && <p className="text-[8px] text-red-500 font-bold uppercase tracking-widest">{errors.afterImage}</p>}
-                    </div>
-                  </div>
+                 {/* Section 5: Before & After Images */}
+                 <div className="space-y-4">
+                   <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-ink border-b border-luxury-border pb-2">5. Before & After Images</h3>
+                   <div className="grid gap-4 sm:grid-cols-2">
+                     <div className="space-y-2">
+                       <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-luxury-gray">Before Image</label>
+                       <div className={cn(
+                         "relative flex h-32 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed transition-all hover:border-luxury-gold group",
+                         errors.beforeImage ? "border-red-500 bg-red-50/10" : "border-luxury-border bg-luxury-ink/[0.02]"
+                       )}>
+                         {previews.before ? (
+                           <img src={previews.before} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                         ) : (
+                           <div className="flex flex-col items-center gap-2">
+                             <ImageIcon className="h-6 w-6 text-luxury-gold opacity-50" />
+                             <span className="text-[8px] font-bold uppercase tracking-widest text-luxury-gray">Upload Before</span>
+                           </div>
+                         )}
+                         <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'before')} className="absolute inset-0 cursor-pointer opacity-0 z-10" />
+                       </div>
+                       {errors.beforeImage && <p className="text-[8px] text-red-500 font-bold uppercase tracking-widest">{errors.beforeImage}</p>}
+                     </div>
+                     <div className="space-y-2">
+                       <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-luxury-gray">After Image</label>
+                       <div className={cn(
+                         "relative flex h-32 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed transition-all hover:border-luxury-gold group",
+                         errors.afterImage ? "border-red-500 bg-red-50/10" : "border-luxury-border bg-luxury-ink/[0.02]"
+                       )}>
+                         {previews.after ? (
+                           <img src={previews.after} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                         ) : (
+                           <div className="flex flex-col items-center gap-2">
+                             <ImageIcon className="h-6 w-6 text-luxury-gold opacity-50" />
+                             <span className="text-[8px] font-bold uppercase tracking-widest text-luxury-gray">Upload After</span>
+                           </div>
+                         )}
+                         <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'after')} className="absolute inset-0 cursor-pointer opacity-0 z-10" />
+                       </div>
+                       {errors.afterImage && <p className="text-[8px] text-red-500 font-bold uppercase tracking-widest">{errors.afterImage}</p>}
+                     </div>
+                   </div>
                   
                   {/* Small side-by-side preview inside admin */}
                   {previews.before && previews.after && (

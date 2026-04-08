@@ -44,10 +44,8 @@ const ManageServices = () => {
     images: [] as string[],
     coreFeatures: [] as { title: string, desc: string }[],
     pricing: [] as { label: string, price: string, unit: string }[],
-    image_url: '',
   });
   const [pointInput, setPointInput] = useState('');
-  const [imageInput, setImageInput] = useState('');
   const [coreFeatureInput, setCoreFeatureInput] = useState({ title: '', desc: '' });
   const [pricingInput, setPricingInput] = useState({ label: '', price: '', unit: '' });
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -131,13 +129,6 @@ const ManageServices = () => {
     setFormData({ ...formData, points: formData.points.filter((_, i) => i !== index) });
   };
 
-  const addImage = () => {
-    if (imageInput.trim()) {
-      setFormData({ ...formData, images: [...formData.images, imageInput.trim()] });
-      setImageInput('');
-    }
-  };
-
   const removeImage = (index: number) => {
     setFormData({ ...formData, images: formData.images.filter((_, i) => i !== index) });
   };
@@ -170,7 +161,7 @@ const ManageServices = () => {
     if (!formData.shortDescription) newErrors.shortDescription = 'Short description is required';
     if (!formData.fullDescription) newErrors.fullDescription = 'Full description is required';
     if (formData.points.length === 0) newErrors.points = 'At least one feature is required';
-    if (previewUrls.length === 0 && formData.images.length === 0 && !formData.image_url) newErrors.image = 'At least one image is required';
+    if (previewUrls.length === 0 && formData.images.length === 0) newErrors.image = 'At least one image is required';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -218,7 +209,7 @@ const ManageServices = () => {
       }
 
       const allImages = [...formData.images, ...uploadedUrls];
-      const mainImageUrl = allImages.length > 0 ? allImages[0] : formData.image_url;
+      const mainImageUrl = allImages.length > 0 ? allImages[0] : '';
 
       const payload = {
         title: formData.title,
@@ -289,7 +280,6 @@ const ManageServices = () => {
       images: [],
       coreFeatures: [], 
       pricing: [], 
-      image_url: '' 
     });
     setSelectedFiles([]);
     setPreviewUrls([]);
@@ -339,9 +329,8 @@ const ManageServices = () => {
       images: service.images || [],
       coreFeatures: (service.core_features as any) || [],
       pricing: (service.pricing as any) || [],
-      image_url: service.image_url 
     });
-    setPreviewUrls(service.images || [service.image_url]);
+    setPreviewUrls([]);
     setIsModalOpen(true);
   }, []);
 
@@ -355,9 +344,8 @@ const ManageServices = () => {
       images: service.images || [],
       coreFeatures: (service.core_features as any) || [],
       pricing: (service.pricing as any) || [],
-      image_url: service.image_url 
     });
-    setPreviewUrls(service.images || [service.image_url]);
+    setPreviewUrls([]);
     setIsPreviewOpen(true);
   }, []);
 
@@ -785,6 +773,7 @@ const ManageServices = () => {
                                   <div key={`existing-${i}`} className="relative group/img-item h-24 overflow-hidden rounded-xl border border-luxury-border">
                                     <img src={img} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
                                     <button 
+                                      type="button"
                                       onClick={() => removeImage(i)}
                                       className="absolute top-1 right-1 h-6 w-6 flex items-center justify-center rounded-full bg-red-500 text-white opacity-0 group-hover/img-item:opacity-100 transition-opacity z-20"
                                     >
@@ -805,6 +794,7 @@ const ManageServices = () => {
                                   <div key={`new-${i}`} className="relative group/img-item h-24 overflow-hidden rounded-xl border border-luxury-border">
                                     <img src={url} className="h-full w-full object-cover" />
                                     <button 
+                                      type="button"
                                       onClick={() => removeSelectedFile(i)}
                                       className="absolute top-1 right-1 h-6 w-6 flex items-center justify-center rounded-full bg-red-500 text-white opacity-0 group-hover/img-item:opacity-100 transition-opacity z-20"
                                     >
@@ -965,8 +955,8 @@ const ManageServices = () => {
 
                       {/* Image Block */}
                       <div className="relative overflow-hidden rounded-[2rem] shadow-2xl transition-transform duration-700 group-hover/service-card:scale-[1.02] aspect-[16/10]">
-                        {(previewUrls[0] || formData.image_url) ? (
-                          <img src={previewUrls[0] || formData.image_url} className="h-full w-full object-cover" />
+                        {(previewUrls[0] || formData.images[0]) ? (
+                          <img src={previewUrls[0] || formData.images[0]} className="h-full w-full object-cover" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center bg-luxury-ink/5">
                             <ImageIcon className="h-16 w-16 text-luxury-gold opacity-20" />
@@ -1039,8 +1029,8 @@ const ManageServices = () => {
 
                     {/* Image */}
                     <div className="w-full mb-6 relative border-x border-t border-luxury-divider border-b-4 border-luxury-divider/50 rounded-[1.5rem] overflow-hidden shadow-xl">
-                      {(previewUrls[0] || formData.image_url) ? (
-                        <img src={previewUrls[0] || formData.image_url} className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover rounded-[1.5rem]" />
+                      {(previewUrls[0] || formData.images[0]) ? (
+                        <img src={previewUrls[0] || formData.images[0]} className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover rounded-[1.5rem]" />
                       ) : (
                         <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] flex items-center justify-center bg-luxury-ink/5 rounded-[1.5rem]">
                           <ImageIcon className="h-20 w-20 text-luxury-gold opacity-20" />
